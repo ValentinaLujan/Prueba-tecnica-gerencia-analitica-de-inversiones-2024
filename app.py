@@ -5,9 +5,10 @@ from sqlalchemy import create_engine
 import plotly.graph_objs as go
 
 # Conexión con la base de datos
-engine = create_engine('postgresql://postgres:12345678@localhost:5432/Inversiones')
+engine = create_engine('postgresql://usuario:contraseña@localhost:5432/Inversiones')
 
 #Querys
+# Para portafolio cliente
 query_portafolio_cliente = """
 SELECT 
     h.id_sistema_cliente AS cliente_id,
@@ -24,6 +25,7 @@ ORDER BY
     total_transacciones DESC;
 """
 
+# Para el porcentaje de activos y macroactivos en portafolio cliente
 query_a_m_cliente = """
 SELECT 
 	COALESCE(id_sistema_cliente, 'sin cliente') as id_sistema_cliente, 
@@ -34,13 +36,14 @@ FROM
 GROUP BY 
     id_sistema_cliente;"""
 
+# Para el porcentaje de activos en "historico_aba_macroactivos"
 query_activo = """
 WITH conteo_activos AS (
     SELECT 
         cod_activo,
         COUNT(*) AS total_activos
     FROM 
-        portafolio_clientes
+        historico_aba_macroactivos
     GROUP BY 
         cod_activo
 ),
@@ -62,13 +65,14 @@ JOIN
 ORDER BY 
     porcentaje_total DESC;"""
 
+# Para el porcentaje de macroactivos en "historico_aba_macroactivos"
 query_macroactivo = """ 
 WITH conteo_macroactivos AS (
     SELECT 
         macroactivo,
         COUNT(*) AS total_macroactivos
     FROM 
-        portafolio_clientes
+        historico_aba_macroactivos
     GROUP BY 
         macroactivo
 ),
@@ -87,6 +91,7 @@ FROM
 ORDER BY 
     porcentaje_total DESC;"""
 
+# Para el portafolio banca
 query_portafolio_banca = """
 SELECT 
     h.cod_banca,
@@ -103,6 +108,7 @@ GROUP BY
 ORDER BY 
     total_transacciones DESC;"""
 
+# Para el porcentaje de macroactivos en portafolio banca 
 query_m_banca = """ SELECT 
     cb.banca,
     hm.cod_banca, 
@@ -115,6 +121,7 @@ GROUP BY
     hm.cod_banca,
     cb.banca;"""
 
+# Para el portafolio de perfil de riesgo
 query_portafolio_perfil_riesgo =  """
 SELECT 
     h.cod_perfil_riesgo,
@@ -131,6 +138,7 @@ GROUP BY
 ORDER BY 
     total_transacciones DESC;"""
 
+# Para el porcentaje de macroactivos en portafolio de perfil de riesgo
 query_m_portafolio_de_riesgo = """
 SELECT 
     cpr.perfil_riesgo,
@@ -144,6 +152,7 @@ GROUP BY
     hm.cod_perfil_riesgo,
     cpr.perfil_riesgo;"""
 
+# Para la evolución del ABA promedio
 query_aba_evolucion = """
 SELECT 
     DATE_TRUNC('month', DATE(h.ingestion_year || '-' || h.ingestion_month || '-01')) AS mes,
@@ -178,7 +187,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.title = 'Gerencia analítica de inversiones 2024'
 
 # Creación de las graficas
-trace_portafolio_cliente= go.Pie(labels=df_portafolio_cliente.cliente_id, values=df_portafolio_cliente.total_transacciones, name='Total de transacciones por cliente')
+trace_portafolio_cliente= go.Pie(labels=df_portafolio_cliente.cliente_id, values=df_portafolio_cliente.total_transacciones, name='Portafolio Cliente: Total de transacciones por cliente')
 trace_cliente_macro = go.Pie(labels=df_m_a_portafolio_cliente.id_sistema_cliente, values=df_m_a_portafolio_cliente.porcentaje_macro, name='Porcentaje Macroactivo')
 trace_cliente_activo = go.Pie(labels=df_m_a_portafolio_cliente.id_sistema_cliente, values=df_m_a_portafolio_cliente.porcentaje_activo, name='Porcentaje Activo')
 trace_macroactivo = go.Pie(labels=df_macroactivo.macroactivo, values=df_macroactivo.porcentaje_total, name='Porcentaje macroactivo')
@@ -190,7 +199,7 @@ trace_m_perfil_riesgo = go.Bar(x=df_m_a_portafolio_perfil_riesgo.perfil_riesgo, 
 trace_aba = go.Bar(x=df_aba_evolucion.mes, y=df_aba_evolucion.aba_promedio, name='Evolución ABA', marker=dict(color=['#4A148C', '#6A1B9A', '#7B1FA2', '#8E24AA', '#9C27B0', '#AB47BC', '#BA68C8', '#CE93D8']))
 
 app.layout = html.Div(children=[
-    html.H1("Total de transacciones por cliente", style={'textAlign': 'center'}),
+    html.H1("Portafolio Cliente: Total de transacciones por cliente", style={'textAlign': 'center'}),
     dcc.Graph(
         id='Portafolio-Clientes-Relacion-entre-el-total-de-transacciones-y-el-promedio-de-ABA',
         figure={'data': [trace_portafolio_cliente],
@@ -207,7 +216,7 @@ app.layout = html.Div(children=[
                         'layout': go.Layout(showlegend=True)
                 }
             )
-        ], className='six columns'),  # Divide en 6 columnas
+        ], className='six columns'), 
 
         html.Div([
             html.H1("Porcentaje activos por cliente", style={'textAlign': 'center'}),
@@ -217,8 +226,8 @@ app.layout = html.Div(children=[
                         'layout': go.Layout(showlegend=True)
                 }
             )
-        ], className='six columns')  # Divide en 6 columnas
-    ], className='row'),  # Divide en una fila
+        ], className='six columns')  
+    ], className='row'),  
 
     html.Div([
         html.Div([
@@ -229,7 +238,7 @@ app.layout = html.Div(children=[
                         'layout': go.Layout(barmode='stack', xaxis_title='Banca', yaxis_title='Promedio ABA')
                 }
             )
-        ], className='six columns'),  # Divide en 6 columnas
+        ], className='six columns'),  
 
         html.Div([
             html.H1("Porcentaje de macroactivos", style={'textAlign': 'center'}),
@@ -239,8 +248,8 @@ app.layout = html.Div(children=[
                         'layout': go.Layout(barmode='stack', xaxis_title='Banca', yaxis_title='Porcentaje macroactivos')
                 }
             )
-        ], className='six columns')  # Divide en 6 columnas
-    ], className='row'),  # Divide en una fila
+        ], className='six columns')  
+    ], className='row'),  
 
     html.Div([
         html.Div([
@@ -251,7 +260,7 @@ app.layout = html.Div(children=[
                         'layout': go.Layout(barmode='stack', xaxis_title='Perfil de riesgo', yaxis_title='Promedio ABA')
                 }
             )
-        ], className='six columns'),  # Divide en 6 columnas
+        ], className='six columns'),  
 
         html.Div([
             html.H1("Porcentaje de macroactivos por perfil de riesgo", style={'textAlign': 'center'}),
@@ -261,8 +270,8 @@ app.layout = html.Div(children=[
                         'layout': go.Layout(barmode='stack', xaxis_title='Perfil de riesgo', yaxis_title='Porcentaje macroactivos')
                 }
             )
-        ], className='six columns')  # Divide en 6 columnas
-    ], className='row'),  # Divide en una fila
+        ], className='six columns')  
+    ], className='row'),  
 
     html.H1("Evolución mes a mes del ABA (Activos Bajo Administración) promedio", style={'textAlign': 'center'}),
     dcc.Graph(
@@ -290,5 +299,6 @@ app.layout = html.Div(children=[
 ], className="container")
 
 
+#Entry point
 if __name__ == '__main__':
     app.run_server(debug=True)

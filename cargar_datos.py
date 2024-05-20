@@ -2,8 +2,8 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 # Configurar la conexión a PostgreSQL
-# En esta parte se debe agregar la configuración de usuario antes de ejecutar
-engine = create_engine('postgresql://postgres:12345678@localhost:5432/Inversiones')
+# IMPORTANTE: En esta parte se debe agregar la configuración de usuario antes de ejecutar
+engine = create_engine('postgresql://usuario:contraseña@localhost:5432/Inversiones')
 
 # Cargar y poblar datos en las tablas
 def cargar_datos():
@@ -19,7 +19,7 @@ def cargar_datos():
     catalogo_banca.to_sql('catalogo_banca', engine, if_exists='append', index=False)
 
     historico_aba_macroactivos = historico_aba_macroactivos.replace('', None) #Ajustar espacios vacios con la palabra reservada
-    historico_aba_macroactivos = historico_aba_macroactivos.replace('None', None)
+    historico_aba_macroactivos = historico_aba_macroactivos.replace('None', None) #Ajustar espacios con la palabra 'None' para que sean tomados como nulos
     historico_aba_macroactivos.to_sql('historico_aba_macroactivos', engine, if_exists='append', index=False)
 
 #Entry point
