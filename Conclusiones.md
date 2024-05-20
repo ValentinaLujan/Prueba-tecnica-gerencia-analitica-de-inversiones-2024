@@ -1,0 +1,16 @@
+## Conclusiones Técnicas
+- La correcta centralización de las bases de datos permite acceder a la información de una manera más sencilla, reduciendo el tiempo y esfuerzo necesarios para manejar múltiple fuentes. En este caso, el uso correcto de las claves foraneas fue fundamental para el desarrollo del proyecto, logrando conseguir con estas una base de datos relacional bien estructurada
+- El modelado y la normalización de datos son procesos indispensables antes de analizar una base de datos. Estos procesos evitan la redundancia y asegura la integridad de los datos, mejorando la efectividad y alcance de las consultas
+- Las consultas en SQL deben ser específicas para poder extraer y calcular los datos necesarios, si estas se hacen correctamente pueden proporcionar información precisa y relevante para conocer los datos y tomar decisiones informadas. 
+- Las visualizaciones mejoran completamente la comprensión de los datos y apoyan la toma de decisiones, especialmente cuando se trata de bases de datos muy grandes y con tablas que poseen un número considerable de registros.  
+- El sistema es escalable y puede ajustarse para incluir nuevas fuentes de datos o modificar las consultas y visualizaciones según las necesidades que se presenten.
+- Puede ser bastante común que al ingresar los datos a la tabla se cometan errores, por lo que varios registros tendrían que ser tomados como nulos o redefinidos según la interpretación del programador
+
+## Conclusiones de Negocio
+-  Los dashboards facilitan el acceso a información clave y su interpretación, mejorando la capacidad de los gerentes para acceder a la información de sus clientes, identificar oportunidades de inversión y gestionar riesgos.
+- Al revisar la gráfica del portafolio de clientes se puede observar que hay clientes que repetidamente hacen uso de estos servicios mientras que otros representan un porcentaje bastante pequeño.
+- Al revisar la gráfica del portafolio de banca podemos observar que la banca que tiene mayor promedio del ABA (Activos Bajo Administración) es la de "Empresas", mientras que la que menos tiene es la "Personal".
+- En cuanto a la gráfica del portafolio de riesgo, podemos observar que la que tiene mayor promedio del ABA es la del perfil "Conservador", teniendo una gran diferencia con los otros perfiles, donde tanto el perfil "Agresivo" como el perfil "Sin definir" tienen un valor promedio bastante bajo en comparación con el Conservador. 
+- Si analizamos la evolución mes a mes del ABA (Activos Bajo Administración) promedio, podemos observar que este es bastante similar en el periodo analizado, teniendo un incremento notorio en los meses de enero y febrero de este año
+- Al analizar la gráfica del porcentaje de macroactivos podemos ver que tanto "Renta Variable" como "FICs" son macroactivos bastante empleados por los clientes, mientras que "Renta Fija" no es muy usado al solo representar el 3.39% de todos los macroactivos empleados.
+- Por ultimo, al analizar la gráfica del porcentaje de activos, podemos observar que al igual que en el punto anterior hay activos bastante empleados como "Ecopetrol", "Fiducuenta" y "Renta Liquidez" que juntos suman alrededor del 59.4% de los activos empleados, mientras que hay otros como "CEMARGOS" que representa tan solo el 0.0751% de todos los activos empleados.
